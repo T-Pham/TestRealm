@@ -11,6 +11,8 @@ import Alamofire
 
 class ViewController: UIViewController {
 
+    var userToken: String!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         signIn()
@@ -30,7 +32,21 @@ class ViewController: UIViewController {
                 "password": "password"
             ]
         ]
-        Alamofire.request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters).responseJSON { response in
+        Alamofire.request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters).responseJSON { [weak self] response in
+            print("\(response.request?.URL): \(response)")
+            self?.userToken = (response.result.value as! NSDictionary)["authentication_token"] as! String
+            self?.fetchQuestions()
+        }
+    }
+
+    func fetchQuestions() {
+        let parameters: [String: AnyObject] = [
+            "format": "json",
+            "page": 1,
+            "per_page": 5,
+            "user_token": userToken
+            ]
+        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions", parameters: parameters).responseJSON { response in
             print("\(response.request?.URL): \(response)")
         }
     }
