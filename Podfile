@@ -8,6 +8,7 @@ target 'TestRealm' do
   # Pods for TestRealm
 
   pod 'Alamofire', '~> 3.4'
+  pod 'AlamofireObjectMapper', '~> 3.0'
   pod 'RealmSwift', '~> 1.0'
   pod 'SugarRecord', '~> 2.2'
   pod 'ObjectMapper', '~> 1.3'

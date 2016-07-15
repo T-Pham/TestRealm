@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B4269CC1D38F1E000B01F41 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4269CB1D38F1E000B01F41 /* Question.swift */; };
 		1BE261F01D38E7420080828E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE261EF1D38E7420080828E /* AppDelegate.swift */; };
 		1BE261F21D38E7420080828E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE261F11D38E7420080828E /* ViewController.swift */; };
 		1BE261F51D38E7420080828E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1BE261F31D38E7420080828E /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B4269CB1D38F1E000B01F41 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
 		1BE261EC1D38E7420080828E /* TestRealm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestRealm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BE261EF1D38E7420080828E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1BE261F11D38E7420080828E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				1BE262011D38E85D0080828E /* .gitignore */,
 				1BE261EF1D38E7420080828E /* AppDelegate.swift */,
 				1BE261F11D38E7420080828E /* ViewController.swift */,
+				1B4269CB1D38F1E000B01F41 /* Question.swift */,
 				1BE261F31D38E7420080828E /* Main.storyboard */,
 				1BE261F61D38E7420080828E /* Assets.xcassets */,
 				1BE261F81D38E7420080828E /* LaunchScreen.storyboard */,
@@ -214,6 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B4269CC1D38F1E000B01F41 /* Question.swift in Sources */,
 				1BE261F21D38E7420080828E /* ViewController.swift in Sources */,
 				1BE261F01D38E7420080828E /* AppDelegate.swift in Sources */,
 			);

@@ -8,9 +8,12 @@
 
 import UIKit
 import Alamofire
+import AlamofireObjectMapper
+import SugarRecord
 
 class ViewController: UIViewController {
 
+    let db = RealmDefaultStorage()
     var userToken: String!
 
     override func viewDidLoad() {
@@ -46,8 +49,9 @@ class ViewController: UIViewController {
             "per_page": 5,
             "user_token": userToken
             ]
-        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions", parameters: parameters).responseJSON { response in
-            print("\(response.request?.URL): \(response)")
+        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
+            let questions = response.result.value
+            print("Questions: \(questions)")
         }
     }
 }
