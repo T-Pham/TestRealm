@@ -39,5 +39,6 @@ class ViewController: UIViewController {
 
     func test() {
         Question.fetchSome()
+        print(Question.all())
     }
 }

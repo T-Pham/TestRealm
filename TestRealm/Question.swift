@@ -12,7 +12,7 @@ import ObjectMapper
 import AlamofireObjectMapper
 import SugarRecord
 
-class Question: DBObject {
+final class Question: DBObject, Queryable {
 
     dynamic var content = ""
 
@@ -22,6 +22,7 @@ class Question: DBObject {
     }
 }
 
+// MARK: - api
 extension Question {
 
     class func fetchSome() {
