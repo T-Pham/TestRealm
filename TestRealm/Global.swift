@@ -6,7 +6,13 @@
 //  Copyright © 2016 Thanh Pham. All rights reserved.
 //
 
-import SugarRecord
+import RealmSwift
 
-let db = RealmDefaultStorage()
 var userToken = ""
+let db = try! Realm()
+
+func updateDb(@noescape updateBlock: () -> ()) {
+    db.beginWrite()
+    updateBlock()
+    try! db.commitWrite()
+}

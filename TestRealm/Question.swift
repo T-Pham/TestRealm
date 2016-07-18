@@ -10,7 +10,6 @@ import Foundation
 import Alamofire
 import ObjectMapper
 import AlamofireObjectMapper
-import SugarRecord
 
 final class Question: DBObject, Queryable {
 
@@ -49,11 +48,8 @@ extension Question {
         ]
         Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
             let questions = response.result.value!
-            try! db.operation { (context, save) -> Void in
-                for question in questions {
-                    try! context.insertOrUpdate(question)
-                }
-                save()
+            updateDb {
+                db.add(questions, update: true)
             }
             completion?(questions)
         }

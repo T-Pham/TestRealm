@@ -7,12 +7,11 @@
 //
 
 import Foundation
-import SugarRecord
+import RealmSwift
 
 protocol Queryable {
     static func all() -> [Self]
     static func findById(id: Int) -> ActualClass?
-    func update(updateBlock: ActualClass -> ())
 }
 
 extension Queryable where Self: DBObject {
@@ -20,18 +19,10 @@ extension Queryable where Self: DBObject {
     typealias ActualClass = Self
 
     static func all() -> [ActualClass] {
-        return try! db.fetch(SugarRecord.Request<ActualClass>())
+        return Array(db.objects(ActualClass))
     }
 
     static func findById(id: Int) -> ActualClass? {
-        let predicate = NSPredicate(format: "id == %d", id)
-        return try! db.fetch(Request<ActualClass>().filteredWith(predicate: predicate)).first
-    }
-
-    func update(updateBlock: ActualClass -> ()) {
-        try! db.operation({ (context, save) -> Void in
-            updateBlock(self)
-            save()
-        })
+        return db.objects(ActualClass).filter("id == \(id)").first
     }
 }

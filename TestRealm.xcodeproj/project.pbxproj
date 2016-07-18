@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1B4269CC1D38F1E000B01F41 /* Question.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4269CB1D38F1E000B01F41 /* Question.swift */; };
-		1B7C8E581D3CA71800920B1F /* SugarRecordContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7C8E571D3CA71800920B1F /* SugarRecordContext.swift */; };
 		1B7C8E5A1D3CAE7100920B1F /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7C8E591D3CAE7100920B1F /* Global.swift */; };
 		1B7C8E5C1D3CAEF400920B1F /* DBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7C8E5B1D3CAEF400920B1F /* DBObject.swift */; };
 		1B7C8E5E1D3CB57700920B1F /* Queryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7C8E5D1D3CB57700920B1F /* Queryable.swift */; };
@@ -23,7 +22,6 @@
 
 /* Begin PBXFileReference section */
 		1B4269CB1D38F1E000B01F41 /* Question.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Question.swift; sourceTree = "<group>"; };
-		1B7C8E571D3CA71800920B1F /* SugarRecordContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SugarRecordContext.swift; sourceTree = "<group>"; };
 		1B7C8E591D3CAE7100920B1F /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		1B7C8E5B1D3CAEF400920B1F /* DBObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBObject.swift; sourceTree = "<group>"; };
 		1B7C8E5D1D3CB57700920B1F /* Queryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queryable.swift; sourceTree = "<group>"; };
@@ -76,7 +74,6 @@
 				1BE262011D38E85D0080828E /* .gitignore */,
 				1BE261EF1D38E7420080828E /* AppDelegate.swift */,
 				1B7C8E591D3CAE7100920B1F /* Global.swift */,
-				1B7C8E571D3CA71800920B1F /* SugarRecordContext.swift */,
 				1B7C8E5B1D3CAEF400920B1F /* DBObject.swift */,
 				1B7C8E5D1D3CB57700920B1F /* Queryable.swift */,
 				1BE261F11D38E7420080828E /* ViewController.swift */,
@@ -232,7 +229,6 @@
 				1B7C8E5C1D3CAEF400920B1F /* DBObject.swift in Sources */,
 				1B4269CC1D38F1E000B01F41 /* Question.swift in Sources */,
 				1BE261F21D38E7420080828E /* ViewController.swift in Sources */,
-				1B7C8E581D3CA71800920B1F /* SugarRecordContext.swift in Sources */,
 				1B7C8E5A1D3CAE7100920B1F /* Global.swift in Sources */,
 				1BE261F01D38E7420080828E /* AppDelegate.swift in Sources */,
 				1B7C8E5E1D3CB57700920B1F /* Queryable.swift in Sources */,
