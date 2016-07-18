@@ -11,6 +11,8 @@ import SugarRecord
 
 protocol Queryable {
     static func all() -> [Self]
+    static func findById(id: Int) -> ActualClass?
+    func update(updateBlock: ActualClass -> ())
 }
 
 extension Queryable where Self: DBObject {
@@ -19,6 +21,11 @@ extension Queryable where Self: DBObject {
 
     static func all() -> [ActualClass] {
         return try! db.fetch(SugarRecord.Request<ActualClass>())
+    }
+
+    static func findById(id: Int) -> ActualClass? {
+        let predicate = NSPredicate(format: "id == %d", id)
+        return try! db.fetch(Request<ActualClass>().filteredWith(predicate: predicate)).first
     }
 
     func update(updateBlock: ActualClass -> ()) {
