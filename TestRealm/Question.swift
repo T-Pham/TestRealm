@@ -14,7 +14,7 @@ import AlamofireObjectMapper
 
 final class Question: DBObject, Queryable {
 
-    dynamic var content = ""
+    dynamic var content: String? = nil
     var answers = List<Answer>()
 
     override func mapping(map: Map) {
@@ -31,7 +31,7 @@ extension Question {
         let questions = self.all()
         var longestQuestion: Question? = nil
         for question in questions {
-            if (longestQuestion == nil || question.content.characters.count > longestQuestion?.content.characters.count) {
+            if (longestQuestion == nil || question.content?.characters.count > longestQuestion?.content?.characters.count) {
                 longestQuestion = question
             }
         }

@@ -18,7 +18,7 @@ final class Answer: DBObject, Queryable {
             return questions.first
         }
     }
-    dynamic var content = ""
+    dynamic var content: String? = nil
 
     override func mapping(map: Map) {
         super.mapping(map)
