@@ -6,8 +6,10 @@
 //  Copyright © 2016 Thanh Pham. All rights reserved.
 //
 
+import RealmSwift
+
 protocol Queryable {
-    static func all() -> [Self]
+    static func all() -> List<ActualClass>
     static func findById(id: Int) -> ActualClass?
 }
 
@@ -15,8 +17,8 @@ extension Queryable where Self: DBObject {
 
     typealias ActualClass = Self
 
-    static func all() -> [ActualClass] {
-        return Array(db.objects(ActualClass))
+    static func all() -> List<ActualClass> {
+        return List(db.objects(ActualClass))
     }
 
     static func findById(id: Int) -> ActualClass? {
