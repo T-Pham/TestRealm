@@ -37,7 +37,8 @@ class ViewController: UIViewController {
     }
 
     func test() {
-        Question.fetchSome()
-        print(Question.all())
+        Question.fetchSome { questions in
+            print(Question.longestQuestion())
+        }
     }
 }
