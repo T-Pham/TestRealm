@@ -54,9 +54,8 @@ extension Question {
                     try! context.insertOrUpdate(question)
                 }
                 save()
-
-                completion?(questions)
             }
+            completion?(questions)
         }
     }
 }
