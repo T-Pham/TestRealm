@@ -6,9 +6,6 @@
 //  Copyright © 2016 Thanh Pham. All rights reserved.
 //
 
-import Foundation
-import RealmSwift
-
 protocol Queryable {
     static func all() -> [Self]
     static func findById(id: Int) -> ActualClass?

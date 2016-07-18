@@ -39,11 +39,11 @@ class ViewController: UIViewController {
     func test() {
         Question.fetchSome { questions in
             let question = Question.longestQuestion()!
-            updateDb {
-                question.content = "I can modify a record"
+            question.fetchAnswers { question in
+                let answers = Answer.all()
+                print(answers.map { $0.content })
+                print(answers.map { $0.question })
             }
-            print(Question.findById(question.id))
-            print(Question.all())
         }
     }
 }

@@ -7,17 +7,20 @@
 //
 
 import Foundation
-import Alamofire
+import RealmSwift
 import ObjectMapper
+import Alamofire
 import AlamofireObjectMapper
 
 final class Question: DBObject, Queryable {
 
     dynamic var content = ""
+    var answers = List<Answer>()
 
     override func mapping(map: Map) {
         super.mapping(map)
         content <- map["content"]
+        answers <- (map["answers"], ListTransform<Answer>())
     }
 }
 
@@ -54,6 +57,26 @@ extension Question {
                     db.add(questions, update: true)
                 }
                 completion?(questions)
+            case .Failure(let error):
+                print(error)
+                completion?(nil)
+            }
+        }
+    }
+
+    func fetchAnswers(completion: (Question? -> Void)? = nil) {
+        let parameters: [String: AnyObject] = [
+            "format": "json",
+            "user_token": userToken
+        ]
+        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/\(id)/answers", parameters: parameters).responseObject { (response: Response<Question, NSError>) in
+            switch response.result {
+            case .Success:
+                let question = response.result.value!
+                updateDb({
+                    db.add(question, update: true)
+                })
+                completion?(question)
             case .Failure(let error):
                 print(error)
                 completion?(nil)
