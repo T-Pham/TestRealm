@@ -20,4 +20,11 @@ extension Queryable where Self: DBObject {
     static func all() -> [ActualClass] {
         return try! db.fetch(SugarRecord.Request<ActualClass>())
     }
+
+    func update(updateBlock: ActualClass -> ()) {
+        try! db.operation({ (context, save) -> Void in
+            updateBlock(self)
+            save()
+        })
+    }
 }
