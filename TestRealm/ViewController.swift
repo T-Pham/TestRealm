@@ -8,13 +8,8 @@
 
 import UIKit
 import Alamofire
-import AlamofireObjectMapper
-import SugarRecord
 
 class ViewController: UIViewController {
-
-    let db = RealmDefaultStorage()
-    var userToken: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,21 +32,12 @@ class ViewController: UIViewController {
         ]
         Alamofire.request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters).responseJSON { [weak self] response in
             print("\(response.request?.URL): \(response)")
-            self?.userToken = (response.result.value as! NSDictionary)["authentication_token"] as! String
-            self?.fetchQuestions()
+            userToken = (response.result.value as! NSDictionary)["authentication_token"] as! String
+            self?.test()
         }
     }
 
-    func fetchQuestions() {
-        let parameters: [String: AnyObject] = [
-            "format": "json",
-            "page": 1,
-            "per_page": 5,
-            "user_token": userToken
-            ]
-        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
-            let questions = response.result.value
-            print("Questions: \(questions)")
-        }
+    func test() {
+        Question.fetchSome()
     }
 }
