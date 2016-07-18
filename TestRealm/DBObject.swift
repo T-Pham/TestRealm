@@ -15,7 +15,9 @@ class DBObject: Object, Mappable {
     dynamic var id = 0
 
     func mapping(map: Map) {
-        id <- map["id"]
+        if id == 0 {
+            id <- map["id"]
+        }
     }
 
     override class func primaryKey() -> String {
