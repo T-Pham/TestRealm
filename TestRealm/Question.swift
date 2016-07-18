@@ -34,7 +34,6 @@ extension Question {
         ]
         Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
             let questions = response.result.value!
-            print("Questions: \(questions)")
             try! db.operation { (context, save) throws -> Void in
                 for question in questions {
                     try! context.insertOrUpdate(question)
