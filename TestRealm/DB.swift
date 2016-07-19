@@ -20,7 +20,7 @@ struct DB {
 
     static func migrate() {
         var configuration = Realm.Configuration.defaultConfiguration
-        configuration.schemaVersion = 2
+        configuration.schemaVersion = 3
         configuration.migrationBlock = { migration, oldSchemeVersion in
         }
         Realm.Configuration.defaultConfiguration = configuration

@@ -15,11 +15,13 @@ import AlamofireObjectMapper
 final class Question: DBObject, Queryable {
 
     dynamic var content: String? = nil
+    dynamic var updateAt: NSDate = NSDate()
     var answers = List<Answer>()
 
     override func mapping(map: Map) {
         super.mapping(map)
         content <- map["content"]
+        updateAt <- map["update_at"]
         answers <- (map["answers"], ListTransform<Answer>())
     }
 }
