@@ -47,7 +47,7 @@ struct Requester {
                 "password": "password"
             ]
         ]
-        request(.POST, URLConstants.apiv5Path + "public/tokens", parameters: parameters, options: .DisableAppendDefaultParameters) { response in
+        requestJSON(.POST, URLConstants.apiv5Path + "public/tokens", parameters: parameters, options: .DisableAppendDefaultParameters) { response in
             if case .Success(let json) = response, let userToken = json["authentication_token"] as? String {
                 Requester.userToken = userToken
             }
@@ -55,14 +55,20 @@ struct Requester {
         }
     }
 
-    static func request(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
+    static func requestJSON(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
         alamofireRequest(method, path, parameters: parameters, options: options).responseJSON { response in
             handleResponse(response, options: options, completionHandler: completionHandler)
         }
     }
 
-    static func request<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
-        alamofireRequest(method, path, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
+    static func requestObject<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseObject { response in
+            handleResponse(response, options: options, completionHandler: completionHandler)
+        }
+    }
+
+    static func requestArray<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<[Type]> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseArray { response in
             handleResponse(response, options: options, completionHandler: completionHandler)
         }
     }
@@ -80,9 +86,15 @@ struct Requester {
 
     static private func handleResponse<T>(response: Response<T, NSError>, options: Options, completionHandler: (RequesterResponse<T> -> Void)? = nil) {
         if case .Success(let value) = response.result where response.response?.statusCode == 200 {
-            if let dbObject = value as? DBObject where options.contains(.SaveObjectsToDB) {
-                DB.update {
-                    DB.realm.add(dbObject, update: true)
+            if options.contains(.SaveObjectsToDB) {
+                if let dbObject = value as? DBObject {
+                    DB.update {
+                        DB.realm.add(dbObject, update: true)
+                    }
+                } else if let array = value as? NSArray where array.count > 0 && array[0] is DBObject {
+                    DB.update {
+                        DB.realm.add(array as! [DBObject], update: true)
+                    }
                 }
             }
             completionHandler?(.Success(response.result.value!))

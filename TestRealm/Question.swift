@@ -44,29 +44,17 @@ extension Question {
 // MARK: - api
 extension Question {
 
-    class func fetchSome(completion: ([Question]? -> Void)? = nil) {
+    class func fetchSome(completionHandler: (RequesterResponse<[Question]> -> Void)? = nil) {
         let parameters: [String: AnyObject] = [
             "format": "json",
             "page": 1,
             "per_page": 5,
             "user_token": Requester.userToken!
         ]
-        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/mine", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
-            switch response.result {
-            case .Success(let value):
-                let questions = value
-                DB.update {
-                    DB.realm.add(questions, update: true)
-                }
-                completion?(questions)
-            case .Failure(let error):
-                print(error)
-                completion?(nil)
-            }
-        }
+        Requester.requestArray(.GET, URLConstants.apiv4Path + "questions/mine", parameters: parameters, completionHandler: completionHandler)
     }
 
     func fetchAnswers(completionHandler: (RequesterResponse<Question> -> Void)? = nil) {
-        Requester.request(.GET, URLConstants.apiv4Path + "questions/\(id)/answers", completionHandler: completionHandler)
+        Requester.requestObject(.GET, URLConstants.apiv4Path + "questions/\(id)/answers", completionHandler: completionHandler)
     }
 }
