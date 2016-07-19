@@ -68,8 +68,8 @@ struct Requester {
             }
             switch response.result {
             case .Success(let value):
-                updateDb {
-                    db.add(value, update: true)
+                DB.update {
+                    DB.realm.add(value, update: true)
                 }
                 completionHandler?(.Success(value))
             case .Failure(let error):

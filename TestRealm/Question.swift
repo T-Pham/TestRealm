@@ -53,8 +53,8 @@ extension Question {
             switch response.result {
             case .Success(let value):
                 let questions = value
-                updateDb {
-                    db.add(questions, update: true)
+                DB.update {
+                    DB.realm.add(questions, update: true)
                 }
                 completion?(questions)
             case .Failure(let error):

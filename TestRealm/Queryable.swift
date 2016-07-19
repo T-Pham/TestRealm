@@ -19,10 +19,10 @@ extension Queryable where Self: DBObject {
     typealias ActualClass = Self
 
     static func all() -> List<ActualClass> {
-        return List(db.objects(ActualClass))
+        return List(DB.realm.objects(ActualClass))
     }
 
     static func findById(id: Int) -> ActualClass? {
-        return db.objects(ActualClass).filter("id == \(id)").first
+        return DB.realm.objects(ActualClass).filter("id == \(id)").first
     }
 }
