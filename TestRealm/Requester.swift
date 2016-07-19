@@ -55,22 +55,15 @@ struct Requester {
         }
     }
 
-    static func request<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
-        alamofireRequest(method, path, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
-            handleResponse(response) { innerReponse in
-                if case .Success(let object) = innerReponse, let dbObject = object as? DBObject where options.contains(.SaveObjectsToDB) {
-                    DB.update {
-                        DB.realm.add(dbObject, update: true)
-                    }
-                }
-                completionHandler?(innerReponse)
-            }
+    static func request(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseJSON { response in
+            handleResponse(response, options: options, completionHandler: completionHandler)
         }
     }
 
-    static func request(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
-        alamofireRequest(method, path, parameters: parameters, options: options).responseJSON { response in
-            handleResponse(response, completionHandler: completionHandler)
+    static func request<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
+            handleResponse(response, options: options, completionHandler: completionHandler)
         }
     }
 
@@ -85,8 +78,13 @@ struct Requester {
         return Alamofire.request(method, url, parameters: parameters)
     }
 
-    static private func handleResponse<T>(response: Response<T, NSError>, completionHandler: (RequesterResponse<T> -> Void)? = nil) {
-        if case .Success = response.result where response.response?.statusCode == 200 {
+    static private func handleResponse<T>(response: Response<T, NSError>, options: Options, completionHandler: (RequesterResponse<T> -> Void)? = nil) {
+        if case .Success(let value) = response.result where response.response?.statusCode == 200 {
+            if let dbObject = value as? DBObject where options.contains(.SaveObjectsToDB) {
+                DB.update {
+                    DB.realm.add(dbObject, update: true)
+                }
+            }
             completionHandler?(.Success(response.result.value!))
         } else {
             guard let completionHandler = completionHandler else {
