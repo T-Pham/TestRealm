@@ -29,18 +29,24 @@ class ViewController: UIViewController {
     }
 
     func test() {
-        Question.fetchSome { questions in
-            let question = Question.longestQuestion()!
-            question.fetchAnswers { response in
-                switch response {
-                case .Success:
-                    let answers = Answer.all()
-                    print(answers.map { $0.content })
-                    print(answers.map { $0.question })
-                case .Failure(let error, let json):
-                    print(error)
-                    print(json)
+        Question.fetchSome { response in
+            switch response {
+            case .Success:
+                let question = Question.longestQuestion()!
+                question.fetchAnswers { response in
+                    switch response {
+                    case .Success:
+                        let answers = Answer.all()
+                        print(answers.map { $0.content })
+                        print(answers.map { $0.question })
+                    case .Failure(let error, let json):
+                        print(error)
+                        print(json)
+                    }
                 }
+            case .Failure(let error, let json):
+                print(error)
+                print(json)
             }
         }
     }
