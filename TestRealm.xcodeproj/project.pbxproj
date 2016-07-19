@@ -19,6 +19,7 @@
 		1BE261F71D38E7420080828E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1BE261F61D38E7420080828E /* Assets.xcassets */; };
 		1BE261FA1D38E7420080828E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1BE261F81D38E7420080828E /* LaunchScreen.storyboard */; };
 		1BE262021D38E85D0080828E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 1BE262011D38E85D0080828E /* .gitignore */; };
+		1BFD2C601D3DCD3200B1BCE1 /* Requester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BFD2C5F1D3DCD3200B1BCE1 /* Requester.swift */; };
 		F904DD3452D7C796B2A638ED /* Pods_TestRealm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F4CCC676C42092B2F1C83A9 /* Pods_TestRealm.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		1BE261F91D38E7420080828E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1BE261FB1D38E7420080828E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1BE262011D38E85D0080828E /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = SOURCE_ROOT; };
+		1BFD2C5F1D3DCD3200B1BCE1 /* Requester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Requester.swift; sourceTree = "<group>"; };
 		352F8A0934BC82F4EC501903 /* Pods-TestRealm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestRealm.release.xcconfig"; path = "Pods/Target Support Files/Pods-TestRealm/Pods-TestRealm.release.xcconfig"; sourceTree = "<group>"; };
 		375465D0BF0BC95A01B82818 /* Pods-TestRealm.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestRealm.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestRealm/Pods-TestRealm.debug.xcconfig"; sourceTree = "<group>"; };
 		7F4CCC676C42092B2F1C83A9 /* Pods_TestRealm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestRealm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +98,7 @@
 		1BE261EE1D38E7420080828E /* TestRealm */ = {
 			isa = PBXGroup;
 			children = (
+				1BFD2C5E1D3DCC8F00B1BCE1 /* Networking */,
 				1B7C8E5F1D3CD41500920B1F /* Models */,
 				1BE261EF1D38E7420080828E /* AppDelegate.swift */,
 				1BE261F11D38E7420080828E /* ViewController.swift */,
@@ -106,6 +109,14 @@
 				1BE262011D38E85D0080828E /* .gitignore */,
 			);
 			path = TestRealm;
+			sourceTree = "<group>";
+		};
+		1BFD2C5E1D3DCC8F00B1BCE1 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				1BFD2C5F1D3DCD3200B1BCE1 /* Requester.swift */,
+			);
+			name = Networking;
 			sourceTree = "<group>";
 		};
 		4FB579D19D71BD85E6262BC8 /* Pods */ = {
@@ -255,6 +266,7 @@
 				1B7C8E5A1D3CAE7100920B1F /* Global.swift in Sources */,
 				1BE261F01D38E7420080828E /* AppDelegate.swift in Sources */,
 				1B7C8E641D3CE08600920B1F /* ListTransform.swift in Sources */,
+				1BFD2C601D3DCD3200B1BCE1 /* Requester.swift in Sources */,
 				1B7C8E5E1D3CB57700920B1F /* Queryable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

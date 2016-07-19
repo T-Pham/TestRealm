@@ -27,6 +27,9 @@ class DBObject: Object, Mappable {
 
 extension Mappable where Self: DBObject {
     init?(_ map: Map) {
+        guard map.JSONDictionary["id"] != nil else {
+            return nil
+        }
         self.init()
     }
 }

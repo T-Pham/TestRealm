@@ -6,9 +6,9 @@
 //  Copyright © 2016 Thanh Pham. All rights reserved.
 //
 
+import Foundation
 import RealmSwift
 
-var userToken = ""
 let db = try! Realm()
 
 func updateDb(@noescape updateBlock: () -> ()) {

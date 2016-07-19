@@ -47,9 +47,9 @@ extension Question {
             "format": "json",
             "page": 1,
             "per_page": 5,
-            "user_token": userToken
+            "user_token": Requester.userToken!
         ]
-        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/mine", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
+        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/mine", parameters: parameters).responseArray { (response: Alamofire.Response<[Question], NSError>) in
             switch response.result {
             case .Success(let value):
                 let questions = value
@@ -64,23 +64,7 @@ extension Question {
         }
     }
 
-    func fetchAnswers(completion: (Question? -> Void)? = nil) {
-        let parameters: [String: AnyObject] = [
-            "format": "json",
-            "user_token": userToken
-        ]
-        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/\(id)/answers", parameters: parameters).responseObject { (response: Response<Question, NSError>) in
-            switch response.result {
-            case .Success(let value):
-                let question = value
-                updateDb({
-                    db.add(question, update: true)
-                })
-                completion?(question)
-            case .Failure(let error):
-                print(error)
-                completion?(nil)
-            }
-        }
+    func fetchAnswers(completionHandler: (Response<Question> -> Void)? = nil) {
+        Requester.request(.GET, "https://staging.ring.md/api/v4.2/questions/\(id)/answers", completionHandler: completionHandler)
     }
 }

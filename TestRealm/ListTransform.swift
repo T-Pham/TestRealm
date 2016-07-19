@@ -6,6 +6,7 @@
 //  Copyright © 2016 Thanh Pham. All rights reserved.
 //
 
+import Foundation
 import ObjectMapper
 import RealmSwift
 

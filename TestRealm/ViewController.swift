@@ -33,7 +33,7 @@ class ViewController: UIViewController {
         Alamofire.request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters).responseJSON { [weak self] response in
             switch response.result {
             case .Success(let value):
-                userToken = (value as! NSDictionary)["authentication_token"] as! String
+                Requester.userToken = ((value as! NSDictionary)["authentication_token"] as! String)
                 self?.test()
             case .Failure(let error):
                 print(error)
@@ -44,10 +44,16 @@ class ViewController: UIViewController {
     func test() {
         Question.fetchSome { questions in
             let question = Question.longestQuestion()!
-            question.fetchAnswers { question in
-                let answers = Answer.all()
-                print(answers.map { $0.content })
-                print(answers.map { $0.question })
+            question.fetchAnswers { response in
+                switch response {
+                case .Success:
+                    let answers = Answer.all()
+                    print(answers.map { $0.content })
+                    print(answers.map { $0.question })
+                case .Failure(let error, let json):
+                    print(error)
+                    print(json)
+                }
             }
         }
     }
