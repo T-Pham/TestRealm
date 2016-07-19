@@ -31,7 +31,7 @@ extension Question {
         let questions = self.all()
         var longestQuestion: Question? = nil
         for question in questions {
-            if (longestQuestion == nil || question.content?.characters.count > longestQuestion?.content?.characters.count) {
+            if longestQuestion == nil || question.content?.characters.count > longestQuestion?.content?.characters.count {
                 longestQuestion = question
             }
         }
@@ -49,7 +49,7 @@ extension Question {
             "per_page": 5,
             "user_token": Requester.userToken!
         ]
-        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/mine", parameters: parameters).responseArray { (response: Alamofire.Response<[Question], NSError>) in
+        Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/mine", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
             switch response.result {
             case .Success(let value):
                 let questions = value
@@ -64,7 +64,7 @@ extension Question {
         }
     }
 
-    func fetchAnswers(completionHandler: (Response<Question> -> Void)? = nil) {
+    func fetchAnswers(completionHandler: (RequesterResponse<Question> -> Void)? = nil) {
         Requester.request(.GET, "https://staging.ring.md/api/v4.2/questions/\(id)/answers", completionHandler: completionHandler)
     }
 }

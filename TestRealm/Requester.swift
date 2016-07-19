@@ -9,19 +9,28 @@
 import Foundation
 import Alamofire
 import AlamofireObjectMapper
+import ObjectMapper
 
-typealias JSON = [String: AnyObject]
-
-enum Response<Value> {
+enum RequesterResponse<Value> {
     case Success(Value)
-    case Failure(NSError?, JSON?)
+    case Failure(NSError?, AnyObject?)
 }
 
 struct Requester {
 
+    struct Options {
+        var appendDefaultParameters = true
+        var saveObjectsToDB = true
+
+        init(appendDefaultParameters shouldAppendDefaultParameters: Bool = true, saveObjectsToDB shouldSaveObjectsToDB: Bool = true) {
+            appendDefaultParameters = shouldAppendDefaultParameters
+            saveObjectsToDB = shouldSaveObjectsToDB
+        }
+    }
+
     static var userToken: String?
 
-    static func signIn(completionHandler: (Response<JSON> -> Void)? = nil) {
+    static func signIn(completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
         let parameters = [
             "device": [
                 "app_version": "2.6.1",
@@ -35,46 +44,59 @@ struct Requester {
                 "password": "password"
             ]
         ]
-        Alamofire.request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters).responseJSON { response in
-            switch response.result {
-            case .Success(let value):
-                guard let json = value as? [String: AnyObject], userToken = json["authentication_token"] as? String else {
-                    completionHandler?(.Failure(nil, nil))
-                    return
-                }
+        request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters, options: Options(appendDefaultParameters: false)) { response in
+            if case .Success(let json) = response, let userToken = json["authentication_token"] as? String {
                 Requester.userToken = userToken
-                completionHandler?(.Success(json))
-            case .Failure(let error):
-                completionHandler?(.Failure(error, nil))
+            }
+            completionHandler?(response)
+        }
+    }
+
+    static func request<Type: Mappable>(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = Options(), completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
+        alamofireRequest(method, urlString, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
+            handleResponse(response) { innerReponse in
+                if case .Success(let object) = innerReponse, let dbObject = object as? DBObject where options.saveObjectsToDB {
+                    DB.update {
+                        DB.realm.add(dbObject, update: true)
+                    }
+                }
+                completionHandler?(innerReponse)
             }
         }
     }
 
-    static func request<Type: DBObject>(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, completionHandler: (Response<Type> -> Void)? = nil) {
-        var parameters = parameters ?? [String: AnyObject]()
-        parameters["format"] = "json"
-        parameters["user_token"] = userToken
-        Alamofire.request(method, urlString, parameters: parameters).responseObject { (response: Alamofire.Response<Type, NSError>) in
-            guard response.response?.statusCode == 200 else {
-                guard let completionHandler = completionHandler else {
-                    return
-                }
-                var json: JSON?
-                if let data = response.data {
-                    json = (try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)) as? JSON
-                }
-                completionHandler(.Failure(nil, json))
+    static func request(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = Options(), completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
+        alamofireRequest(method, urlString, parameters: parameters, options: options).responseJSON { response in
+            handleResponse(response, completionHandler: completionHandler)
+        }
+    }
+
+    static private func alamofireRequest(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = Options()) -> Request {
+        if (options.appendDefaultParameters) {
+            var parameters = parameters ?? [String: AnyObject]()
+            parameters["format"] = "json"
+            parameters["user_token"] = userToken
+        }
+        return Alamofire.request(method, urlString, parameters: parameters)
+    }
+
+    static private func handleResponse<T>(response: Response<T, NSError>, completionHandler: (RequesterResponse<T> -> Void)? = nil) {
+        if case .Success = response.result where response.response?.statusCode == 200 {
+            completionHandler?(.Success(response.result.value!))
+        } else {
+            guard let completionHandler = completionHandler else {
                 return
             }
-            switch response.result {
-            case .Success(let value):
-                DB.update {
-                    DB.realm.add(value, update: true)
-                }
-                completionHandler?(.Success(value))
-            case .Failure(let error):
-                completionHandler?(.Failure(error, nil))
+
+            var error: NSError?
+            if case .Failure(let e) = response.result {
+                error = e
             }
+            var json: AnyObject?
+            if let data = response.data {
+                json = try? NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            }
+            completionHandler(.Failure(error, json))
         }
     }
 }
