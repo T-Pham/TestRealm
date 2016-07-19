@@ -18,14 +18,17 @@ enum RequesterResponse<Value> {
 
 struct Requester {
 
-    struct Options {
-        var appendDefaultParameters = true
-        var saveObjectsToDB = true
+    struct Options: OptionSetType {
+        let rawValue: Int
 
-        init(appendDefaultParameters shouldAppendDefaultParameters: Bool = true, saveObjectsToDB shouldSaveObjectsToDB: Bool = true) {
-            appendDefaultParameters = shouldAppendDefaultParameters
-            saveObjectsToDB = shouldSaveObjectsToDB
-        }
+        static let None = Options(rawValue: 0)
+
+        static let AppendDefaultParameters = Options(rawValue: 1 << 0)
+        static let SaveObjectsToDB = Options(rawValue: 1 << 1)
+
+        static let Default = Options(rawValue: AppendDefaultParameters.rawValue | SaveObjectsToDB.rawValue)
+        static let DisableAppendDefaultParameters = Options(rawValue: Default.rawValue & (~AppendDefaultParameters.rawValue))
+        static let DisableSaveObjectsToDB = Options(rawValue: Default.rawValue & (~SaveObjectsToDB.rawValue))
     }
 
     static var userToken: String?
@@ -44,7 +47,7 @@ struct Requester {
                 "password": "password"
             ]
         ]
-        request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters, options: Options(appendDefaultParameters: false)) { response in
+        request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters, options: .DisableAppendDefaultParameters) { response in
             if case .Success(let json) = response, let userToken = json["authentication_token"] as? String {
                 Requester.userToken = userToken
             }
@@ -52,10 +55,10 @@ struct Requester {
         }
     }
 
-    static func request<Type: Mappable>(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = Options(), completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
+    static func request<Type: Mappable>(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
         alamofireRequest(method, urlString, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
             handleResponse(response) { innerReponse in
-                if case .Success(let object) = innerReponse, let dbObject = object as? DBObject where options.saveObjectsToDB {
+                if case .Success(let object) = innerReponse, let dbObject = object as? DBObject where options.contains(.SaveObjectsToDB) {
                     DB.update {
                         DB.realm.add(dbObject, update: true)
                     }
@@ -65,17 +68,18 @@ struct Requester {
         }
     }
 
-    static func request(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = Options(), completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
+    static func request(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
         alamofireRequest(method, urlString, parameters: parameters, options: options).responseJSON { response in
             handleResponse(response, completionHandler: completionHandler)
         }
     }
 
-    static private func alamofireRequest(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = Options()) -> Request {
-        if (options.appendDefaultParameters) {
-            var parameters = parameters ?? [String: AnyObject]()
-            parameters["format"] = "json"
-            parameters["user_token"] = userToken
+    static private func alamofireRequest(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]?, options: Options) -> Request {
+        let shouldAppendDefaultParameters = options.contains(.AppendDefaultParameters)
+        var parameters = parameters ?? (shouldAppendDefaultParameters ? [String: AnyObject]() : nil)
+        if shouldAppendDefaultParameters {
+            parameters?["format"] = "json"
+            parameters?["user_token"] = userToken
         }
         return Alamofire.request(method, urlString, parameters: parameters)
     }
