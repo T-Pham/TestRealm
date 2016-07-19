@@ -67,6 +67,6 @@ extension Question {
     }
 
     func fetchAnswers(completionHandler: (RequesterResponse<Question> -> Void)? = nil) {
-        Requester.request(.GET, "https://staging.ring.md/api/v4.2/questions/\(id)/answers", completionHandler: completionHandler)
+        Requester.request(.GET, URLConstants.apiv4Path + "questions/\(id)/answers", completionHandler: completionHandler)
     }
 }

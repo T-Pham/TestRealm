@@ -47,7 +47,7 @@ struct Requester {
                 "password": "password"
             ]
         ]
-        request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters, options: .DisableAppendDefaultParameters) { response in
+        request(.POST, URLConstants.apiv5Path + "public/tokens", parameters: parameters, options: .DisableAppendDefaultParameters) { response in
             if case .Success(let json) = response, let userToken = json["authentication_token"] as? String {
                 Requester.userToken = userToken
             }
@@ -55,8 +55,8 @@ struct Requester {
         }
     }
 
-    static func request<Type: Mappable>(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
-        alamofireRequest(method, urlString, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
+    static func request<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseObject { (response: Response<Type, NSError>) in
             handleResponse(response) { innerReponse in
                 if case .Success(let object) = innerReponse, let dbObject = object as? DBObject where options.contains(.SaveObjectsToDB) {
                     DB.update {
@@ -68,20 +68,21 @@ struct Requester {
         }
     }
 
-    static func request(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
-        alamofireRequest(method, urlString, parameters: parameters, options: options).responseJSON { response in
+    static func request(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<AnyObject> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseJSON { response in
             handleResponse(response, completionHandler: completionHandler)
         }
     }
 
-    static private func alamofireRequest(method: Alamofire.Method, _ urlString: URLStringConvertible, parameters: [String: AnyObject]?, options: Options) -> Request {
+    static private func alamofireRequest(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]?, options: Options) -> Request {
         let shouldAppendDefaultParameters = options.contains(.AppendDefaultParameters)
         var parameters = parameters ?? (shouldAppendDefaultParameters ? [String: AnyObject]() : nil)
         if shouldAppendDefaultParameters {
             parameters?["format"] = "json"
             parameters?["user_token"] = userToken
         }
-        return Alamofire.request(method, urlString, parameters: parameters)
+        let url = NSURL(string: path, relativeToURL: NSURL(string: URLConstants.serverURL))!
+        return Alamofire.request(method, url, parameters: parameters)
     }
 
     static private func handleResponse<T>(response: Response<T, NSError>, completionHandler: (RequesterResponse<T> -> Void)? = nil) {
