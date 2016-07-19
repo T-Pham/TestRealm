@@ -31,8 +31,13 @@ class ViewController: UIViewController {
             ]
         ]
         Alamofire.request(.POST, "https://staging.ring.md/api/v5/public/tokens", parameters: parameters).responseJSON { [weak self] response in
-            userToken = (response.result.value as! NSDictionary)["authentication_token"] as! String
-            self?.test()
+            switch response.result {
+            case .Success(let value):
+                userToken = (value as! NSDictionary)["authentication_token"] as! String
+                self?.test()
+            case .Failure(let error):
+                print(error)
+            }
         }
     }
 

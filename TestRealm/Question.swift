@@ -51,8 +51,8 @@ extension Question {
         ]
         Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/mine", parameters: parameters).responseArray { (response: Response<[Question], NSError>) in
             switch response.result {
-            case .Success:
-                let questions = response.result.value!
+            case .Success(let value):
+                let questions = value
                 updateDb {
                     db.add(questions, update: true)
                 }
@@ -71,8 +71,8 @@ extension Question {
         ]
         Alamofire.request(.GET, "https://staging.ring.md/api/v4.2/questions/\(id)/answers", parameters: parameters).responseObject { (response: Response<Question, NSError>) in
             switch response.result {
-            case .Success:
-                let question = response.result.value!
+            case .Success(let value):
+                let question = value
                 updateDb({
                     db.add(question, update: true)
                 })
