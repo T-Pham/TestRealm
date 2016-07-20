@@ -14,22 +14,13 @@ class DBObject: Object, Mappable {
 
     dynamic var id = 0
 
+    override class func primaryKey() -> String {
+        return "id"
+    }
+
     func mapping(map: Map) {
         if id == 0 {
             id <- map["id"]
         }
-    }
-
-    override class func primaryKey() -> String {
-        return "id"
-    }
-}
-
-extension Mappable where Self: DBObject {
-    init?(_ map: Map) {
-        guard map.JSONDictionary["id"] != nil else {
-            return nil
-        }
-        self.init()
     }
 }

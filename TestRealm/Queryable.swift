@@ -11,10 +11,10 @@ import RealmSwift
 
 protocol Queryable {
     static func all() -> List<ActualClass>
-    static func findById(id: Int) -> ActualClass?
+    static func findByPrimaryKey(value: AnyObject) -> ActualClass?
 }
 
-extension Queryable where Self: DBObject {
+extension Queryable where Self: Object {
 
     typealias ActualClass = Self
 
@@ -22,7 +22,11 @@ extension Queryable where Self: DBObject {
         return List(DB.realm.objects(ActualClass))
     }
 
-    static func findById(id: Int) -> ActualClass? {
-        return DB.realm.objects(ActualClass).filter("id == \(id)").first
+    static func findByPrimaryKey(value: AnyObject) -> ActualClass? {
+        let primaryKey = ActualClass.primaryKey()
+        guard primaryKey != nil else {
+            return nil
+        }
+        return DB.realm.objects(ActualClass).filter("%K == %@", primaryKey!, value).first
     }
 }
