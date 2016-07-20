@@ -61,14 +61,14 @@ struct Requester {
         }
     }
 
-    static func requestObject<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
-        alamofireRequest(method, path, parameters: parameters, options: options).responseObject { response in
+    static func requestObject<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, keyPath: String? = nil, completionHandler: (RequesterResponse<Type> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseObject(keyPath: keyPath) { response in
             handleResponse(response, options: options, completionHandler: completionHandler)
         }
     }
 
-    static func requestArray<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, completionHandler: (RequesterResponse<[Type]> -> Void)? = nil) {
-        alamofireRequest(method, path, parameters: parameters, options: options).responseArray { response in
+    static func requestArray<Type: Mappable>(method: Alamofire.Method, _ path: String, parameters: [String: AnyObject]? = nil, options: Options = .Default, keyPath: String? = nil, completionHandler: (RequesterResponse<[Type]> -> Void)? = nil) {
+        alamofireRequest(method, path, parameters: parameters, options: options).responseArray(keyPath: keyPath) { response in
             handleResponse(response, options: options, completionHandler: completionHandler)
         }
     }
