@@ -51,10 +51,10 @@ extension Question {
             "per_page": 5,
             "user_token": Requester.userToken!
         ]
-        Requester.request(.GET, URLConstants.apiv4Path + "questions/mine", parameters: parameters, completionHandler: completionHandler)
+        Requester.requestArray(.GET, URLConstants.apiv4Path + "questions/mine", parameters: parameters, completionHandler: completionHandler)
     }
 
     func fetchAnswers(completionHandler: (RequesterResponse<Question> -> Void)? = nil) {
-        Requester.request(.GET, URLConstants.apiv4Path + "questions/\(id)/answers", completionHandler: completionHandler)
+        Requester.requestObject(.GET, URLConstants.apiv4Path + "questions/\(id)/answers", completionHandler: completionHandler)
     }
 }
